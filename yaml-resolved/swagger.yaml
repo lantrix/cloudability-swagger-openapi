@@ -6,25 +6,20 @@ servers:
 - url: https://virtserver.swaggerhub.com/lantrix/Cloudability/1
   description: SwaggerHub API Auto Mocking
 - url: https://app.cloudability.com/api/1
-- url: https://api.cloudability.com/v3
+  description: Production API
 security:
-- BasicAuth: []
-paths: {}
+- ApiKeyAuth: []
+paths:
+  /account_groups:
+    get:
+      description: List account groups
+      responses:
+        "200":
+          description: Successful response
 components:
-  schemas:
-    V3:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
-    V1:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int64
+  schemas: {}
   securitySchemes:
-    BasicAuth:
-      type: http
-      scheme: basic
+    ApiKeyAuth:
+      type: apiKey
+      name: auth_token
+      in: query
