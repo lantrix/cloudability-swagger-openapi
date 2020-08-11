@@ -8,18 +8,195 @@ servers:
 - url: https://app.cloudability.com/api/1
   description: Production API
 security:
-- ApiKeyAuth: []
+- AuthToken: []
 paths:
-  /account_groups:
+  /account_groups/:
     get:
+      summary: List account groups
       description: List account groups
       responses:
         "200":
           description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountGroups'
+              example:
+              - id: 1
+                name: red
+                position: 1
+                account_group_entry_values:
+                - red1
+                - red2
+                - red3
+              - id: 2
+                name: orange
+                position: 2
+                account_group_entry_values:
+                - orange1
+                - orange2
+              - id: 3
+                name: mauve
+                position: 3
+                account_group_entry_values: []
+    post:
+      summary: Create an account group
+      requestBody:
+        $ref: '#/components/requestBodies/AccountGroupCreateBody'
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountGroup'
+              example:
+                id: 4
+                name: purple
+                position: 5
+                account_group_entry_values: []
+  /account_groups/{id}:
+    get:
+      summary: Get a specific account group
+      description: Get a specific account group
+      parameters:
+      - name: id
+        in: path
+        description: This is the Account Group unique id assigned when it was created
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maximum: 1
+          type: integer
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountGroup'
+    put:
+      summary: Update an account group
+      parameters:
+      - name: id
+        in: path
+        description: This is the Account Group unique id assigned when it was created
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maximum: 1
+          type: integer
+      requestBody:
+        $ref: '#/components/requestBodies/AccountGroupUpdateBody'
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountGroup'
+              example:
+                id: 4
+                name: more purple
+                position: 5
+                account_group_entry_values: []
+    delete:
+      summary: Delete an account group
+      parameters:
+      - name: id
+        in: path
+        description: This is the Account Group unique id assigned when it was created
+        required: true
+        style: simple
+        explode: false
+        schema:
+          maximum: 1
+          type: integer
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountGroup'
+              example:
+                id: 4
+                name: more purple
+                position: 5
+                account_group_entry_values: []
 components:
-  schemas: {}
+  schemas:
+    AccountGroups:
+      type: array
+      items:
+        $ref: '#/components/schemas/AccountGroups_inner'
+    AccountGroup:
+      type: array
+      items:
+        $ref: '#/components/schemas/AccountGroup_inner'
+    AccountGroups_inner:
+      minimum: 1
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        position:
+          type: integer
+        account_group_entry_values:
+          type: array
+          items:
+            type: string
+    AccountGroup_inner:
+      maximum: 1
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        position:
+          type: integer
+        account_group_entry_values:
+          type: array
+          items:
+            type: string
+  requestBodies:
+    AccountGroupCreateBody:
+      content:
+        application/json:
+          schema:
+            required:
+            - name
+            - position
+            type: object
+            properties:
+              name:
+                type: string
+              position:
+                type: integer
+          example:
+            name: purple
+            position: 5
+      required: true
+    AccountGroupUpdateBody:
+      content:
+        application/json:
+          schema:
+            required:
+            - name
+            type: object
+            properties:
+              name:
+                type: string
+          example:
+            name: more purple
+      required: true
   securitySchemes:
-    ApiKeyAuth:
+    AuthToken:
       type: apiKey
       name: auth_token
       in: query
